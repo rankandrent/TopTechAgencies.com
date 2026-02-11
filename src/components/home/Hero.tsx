@@ -18,12 +18,11 @@ export function Hero() {
                 </div>
 
                 <H1 className="mb-6 max-w-4xl tracking-tight">
-                    Pragmatic UI/UX Design <br className="hidden sm:block" /> Agency for SaaS
+                    Connect with trusted companies <br className="hidden sm:block" /> for your next project.
                 </H1>
 
                 <P className="mb-10 max-w-2xl text-lg text-text-secondary md:text-xl">
-                    We help SaaS companies turn complex products into intuitive experiences that users love.
-                    No fluff, just data-driven design that converts.
+                    Find the perfect partner to bring your ideas to life. From software development to design and marketing, we connect you with vetted agencies that deliver results.
                 </P>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
