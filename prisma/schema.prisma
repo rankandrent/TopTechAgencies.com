@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Agency {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  clutchUrl       String?
+  websiteUrl      String?
+  logoUrl         String?
+  description     String   @db.Text
+  longDescription String?  @db.Text
+  
+  // Clutch Data
+  clutchRating    Float?
+  reviewCount     Int?
+  minProjectSize  String?
+  avgHourlyRate   String?
+  teamSize        String?
+  founded         String?
+  
+  // Location
+  city            String
+  state           String?
+  country         String   @default("US")
+  
+  // Details
+  services        String[] // Array of services offered
+  industries      String[] // Array of industries served
+  notableClients  String[] // Array of notable client names
+  specialties     String[] // What they're best known for
+  
+  // For blog placement
+  tagline         String?  // "Best for {X}"
+  
+  // Relations
+  blogPosts       BlogAgencyEntry[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model BlogPost {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  metaTitle       String
+  metaDescription String
+  
+  // Location targeting
+  city            String
+  state           String?
+  
+  // Content
+  introContent    String   @db.Text
+  methodContent   String   @db.Text
+  guideContent    String   @db.Text
+  conclusionContent String @db.Text
+  
+  // SEO
+  publishedAt     DateTime?
+  updatedAt       DateTime @updatedAt
+  readingTime     Int      @default(8)
+  
+  // Relations
+  agencies        BlogAgencyEntry[]
+}
+
+model BlogAgencyEntry {
+  id              String   @id @default(cuid())
+  rank            Int      // 1-10
+  
+  // Custom content per blog
+  overview        String   @db.Text
+  whyChoose       String   @db.Text
+  knownFor        String   @db.Text
+  
+  // Relations
+  blogPost        BlogPost @relation(fields: [blogPostId], references: [id])
+  blogPostId      String
+  agency          Agency   @relation(fields: [agencyId], references: [id])
+  agencyId        String
+  
+  @@unique([blogPostId, agencyId])
+}
+
+model City {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  state           String
+  stateCode       String
+  population      Int?
+  techScene       String?  @db.Text // Description of local tech scene
+  
+  // For generating unique content
+  industries      String[] // Key local industries
+  landmarks       String[] // For contextual content
+}
