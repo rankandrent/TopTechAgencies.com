@@ -21,19 +21,19 @@ const supabase = createClient(
 const FALLBACK_AGENCIES = [
     {
         rank: 1,
-        name: "Eleken",
-        tagline: "UI/UX design for SaaS",
+        name: "tkxel",
+        tagline: "Top-Rated Digital Transformation Partner",
         clutch_rating: 5.0,
-        website_url: "https://eleken.com",
-        services: ["UI/UX Design", "Web Design", "SaaS Design"],
-        description: "Eleken is a pragmatic design agency for SaaS companies. We help established businesses and startups design user-friendly products that solve real problems.",
-        why_choose: "We don't just draw pretty pictures. We understand SaaS business logic and create designs that help you grow.",
-        min_project_size: "$10,000+",
-        hourly_rate: "$100 - $149 / hr",
-        employees_count: "10 - 49",
-        year_founded: "2015",
-        reviews_count: 12,
-        clutch_url: "#",
+        website_url: "https://tkxel.com",
+        services: ["Software Development", "UI/UX Design", "Mobile Apps", "AI Solutions"],
+        description: "tkxel is a leading technology partner for Fortune 500s and ambitious startups. With 15+ years of excellence, they craft award-winning digital experiences that drive real business growth. Their design philosophy blends aesthetic brilliance with data-driven usability.",
+        why_choose: "tkxel stands out for its **holistic approach**—combining world-class design with robust engineering. They don't just design interfaces; they build **scalable digital ecosystems**. With 700+ experts and 24/7 support, they act as a true extension of your team.",
+        min_project_size: "$25,000+",
+        hourly_rate: "$25 - $49 / hr",
+        employees_count: "700+",
+        year_founded: "2008",
+        reviews_count: 85,
+        clutch_url: "tkxel",
     },
     {
         rank: 2,
@@ -44,7 +44,7 @@ const FALLBACK_AGENCIES = [
         services: ["UI/UX Design", "Branding", "Web Development"],
         description: "Clay is a full-service UI/UX design and branding agency in San Francisco. We create world-class digital products, web design, and branding.",
         why_choose: "Award-winning design team with a focus on premium aesthetics.",
-        min_project_size: "$25,000+",
+        min_project_size: "$50,000+",
         hourly_rate: "$150 - $199 / hr",
         employees_count: "50 - 249",
         year_founded: "2013",
@@ -60,7 +60,7 @@ const FALLBACK_AGENCIES = [
         services: ["Product Design", "Web Development", "App Development"],
         description: "Ramotion is a digital product design agency focused on branding, UI/UX design, and web development for startups and growing tech companies.",
         why_choose: "Holistic approach combining design and engineering.",
-        min_project_size: "$10,000+",
+        min_project_size: "$25,000+",
         hourly_rate: "$100 - $149 / hr",
         employees_count: "10 - 49",
         year_founded: "2009",
@@ -207,10 +207,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                 </div>
 
                                 <div className="space-y-20">
-                                    {agencies.map((agency: any) => (
+                                    {agencies.map((agency: any, index: number) => (
                                         <AgencyEntry
                                             key={agency.rank}
                                             rank={agency.rank}
+                                            isProminent={index === 0}
                                             name={agency.name}
                                             tagline={agency.tagline}
                                             clutchRating={agency.clutch_rating || agency.clutchRating}

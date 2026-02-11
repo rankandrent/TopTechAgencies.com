@@ -26,6 +26,7 @@ interface AgencyEntryProps {
     reviewsCount?: number
     clutchUrl?: string | null
     location?: string
+    isProminent?: boolean
 }
 
 export function AgencyEntry({
@@ -45,7 +46,8 @@ export function AgencyEntry({
     reviewsCount,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clutchUrl,
-    location
+    location,
+    isProminent = false
 }: AgencyEntryProps) {
     const [isContactModalOpen, setIsContactModalOpen] = useState(false)
     const id = name.toLowerCase().replace(/ /g, '-')
@@ -63,7 +65,16 @@ export function AgencyEntry({
     const faviconUrl = websiteUrl ? getFaviconUrl(websiteUrl) : null;
 
     return (
-        <div id={id} className="py-20 pt-0 border-b border-border-light last:border-0 scroll-mt-32">
+        <div
+            id={id}
+            className={`py-20 pt-0 border-b border-border-light last:border-0 scroll-mt-32 relative ${isProminent ? 'bg-gradient-to-br from-accent-peach/5 to-transparent p-8 -mx-8 rounded-3xl border border-accent-peach/30 shadow-lg' : ''
+                }`}
+        >
+            {isProminent && (
+                <div className="absolute -top-4 left-8 bg-accent-peach text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md z-10 flex items-center gap-2">
+                    <Star className="w-3.5 h-3.5 fill-current" /> Top Pick
+                </div>
+            )}
 
             {/* Contact Modal */}
             <Modal
