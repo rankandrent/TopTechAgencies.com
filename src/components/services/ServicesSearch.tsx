@@ -54,7 +54,7 @@ export function ServicesSearch({ services, cities }: ServicesSearchProps) {
 
                 {/* Services Grid */}
                 {filteredServices.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredServices.map((service, index) => (
                             <article
                                 key={service.slug}
