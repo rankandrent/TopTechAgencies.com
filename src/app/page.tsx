@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Find Top Software Companies & Agencies | TopTechAgencies.com',
   description: 'The most trusted directory for finding software development, AI, and design partners. Compare 31,000+ vetted agencies across the USA.',
   alternates: {
-    canonical: "https://toptechagencies.com",
+    canonical: "/",
   },
   openGraph: {
     title: 'Find Top Software Companies & Agencies | TopTechAgencies.com',
