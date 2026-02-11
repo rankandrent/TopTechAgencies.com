@@ -371,13 +371,13 @@ export default async function ServiceCityPage({ params }: Props) {
                             </div>
 
                             <aside className="lg:w-1/3">
-                                <div className="sticky top-32 max-h-[calc(100vh-120px)] overflow-y-auto pr-2 custom-scrollbar">
+                                <div className="sticky top-24 max-h-[calc(100vh-100px)] overflow-y-auto pr-2 custom-scrollbar">
                                     <TableOfContents items={matchedAgencies.map((a: any) => ({
                                         id: a.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
                                         title: a.name,
                                         rank: a.rank
                                     }))} />
-                                    <div className="mt-8 p-8 bg-accent-peach/5 rounded-3xl border border-accent-peach/10">
+                                    <div className="mt-4 p-8 bg-accent-peach/5 rounded-3xl border border-accent-peach/10">
                                         <h4 className="font-bold mb-4">Want to be listed?</h4>
                                         <P className="text-sm mb-6">If you provide {service.name.toLowerCase()} in {city.name}, contact us for an audit.</P>
                                         <Link

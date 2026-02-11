@@ -42,7 +42,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     }, [items])
 
     return (
-        <nav className="p-6 rounded-2xl bg-bg-secondary border border-border-light hidden lg:block">
+        <nav className="px-6 py-5 rounded-2xl bg-bg-secondary border border-border-light hidden lg:block">
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-text-muted">Table of Contents</h4>
             <ul className="space-y-3">
                 {items.map((item) => {
