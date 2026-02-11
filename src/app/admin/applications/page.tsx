@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
 import { Loader2, TrendingUp, Users, CheckCircle, XCircle, Search, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 // Initialize Supabase client
-const supabase = createClient();
+
 
 export default function ApplicationsPage() {
     const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0 });
@@ -19,13 +18,10 @@ export default function ApplicationsPage() {
         try {
             setIsLoading(true);
 
-            // Fetch applications
-            const { data, error } = await supabase
-                .from('agency_applications')
-                .select('*')
-                .order('created_at', { ascending: false });
+            const res = await fetch('/api/admin/applications');
+            const data = await res.json();
 
-            if (error) throw error;
+            if (data.error) throw new Error(data.error);
 
             const apps = data || [];
             setApplications(apps);
@@ -33,8 +29,8 @@ export default function ApplicationsPage() {
             // Calculate stats
             setStats({
                 total: apps.length,
-                pending: apps.filter(a => a.status === 'pending').length,
-                approved: apps.filter(a => a.status === 'approved').length
+                pending: apps.filter((a: any) => a.status === 'pending').length,
+                approved: apps.filter((a: any) => a.status === 'approved').length
             });
 
         } catch (err) {
@@ -55,12 +51,14 @@ export default function ApplicationsPage() {
                 app.id === id ? { ...app, status: newStatus } : app
             ));
 
-            const { error } = await supabase
-                .from('agency_applications')
-                .update({ status: newStatus })
-                .eq('id', id);
+            const res = await fetch('/api/admin/applications', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status: newStatus })
+            });
 
-            if (error) throw error;
+            const result = await res.json();
+            if (result.error) throw new Error(result.error);
 
             // Re-fetch to sync stats
             fetchData();
@@ -193,8 +191,8 @@ export default function ApplicationsPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${app.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                                app.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'
+                                            app.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                'bg-yellow-100 text-yellow-800'
                                             }`}>
                                             {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                                         </span>
