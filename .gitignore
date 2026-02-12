@@ -44,4 +44,7 @@ next-env.d.ts
 
 # Large Data Files
 *.csv
-*.json
+# *.json # Commented out to ensure package.json is tracked
+search_tkxel.agencies.json
+# Ignore other large json files if necessary, but keep package.json
+
