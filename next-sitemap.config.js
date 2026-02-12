@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://search.tkxel.com',
+  siteUrl: process.env.SITE_URL || 'https://toptechagencies.com',
   generateRobotsTxt: true,
   exclude: ['/server-sitemap.xml'], // <= exclude here
   robotsTxtOptions: {

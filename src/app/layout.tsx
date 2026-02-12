@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     creator: '@tkxel',
   },
   metadataBase: new URL('https://toptechagencies.com'),
+  alternates: {
+    canonical: './',
+  },
 
   robots: {
     index: true,
