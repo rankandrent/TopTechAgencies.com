@@ -27,6 +27,7 @@ interface AgencyEntryProps {
     clutchUrl?: string | null
     location?: string
     isProminent?: boolean
+    onConnect?: () => void
 }
 
 export function AgencyEntry({
@@ -47,7 +48,8 @@ export function AgencyEntry({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clutchUrl,
     location,
-    isProminent = false
+    isProminent = false,
+    onConnect
 }: AgencyEntryProps) {
     const [isContactModalOpen, setIsContactModalOpen] = useState(false)
     const id = name.toLowerCase().replace(/ /g, '-')
@@ -123,7 +125,7 @@ export function AgencyEntry({
                             <Button
                                 variant="primary"
                                 size="sm"
-                                onClick={() => setIsContactModalOpen(true)}
+                                onClick={onConnect || (() => setIsContactModalOpen(true))}
                                 className="bg-cta-primary text-cta-text hover:bg-cta-primary/90 border-transparent shadow-lg shadow-cta-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all text-base px-6 py-2.5"
                             >
                                 Let&apos;s Connect <Send className="ml-2 h-4 w-4" />

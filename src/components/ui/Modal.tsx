@@ -32,7 +32,7 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
     if (!isOpen) return null
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center md:p-4 sm:p-6">
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -42,7 +42,7 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
 
             {/* Modal Content */}
             <div
-                className="relative w-full max-w-lg bg-bg-primary rounded-2xl shadow-2xl border border-border-light transform transition-all animate-in fade-in zoom-in-95 duration-200"
+                className="relative w-full md:max-w-lg h-full md:h-auto bg-bg-primary md:rounded-2xl shadow-2xl border border-border-light transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col"
                 role="dialog"
                 aria-modal="true"
             >
@@ -61,7 +61,7 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
                 </div>
 
                 {/* Body */}
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto flex-grow">
                     {children}
                 </div>
             </div>

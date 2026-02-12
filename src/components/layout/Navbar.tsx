@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Container } from './Container'
 import { Button } from '@/components/ui/Button'
 // import { MobileMenu } from './MobileMenu' // TODO: Implement MobileMenu
@@ -9,7 +10,14 @@ export function Navbar() {
             <Container className="flex h-20 items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold tracking-tight text-text-primary">TopTechAgencies</span>
+                    <Image
+                        src="/logo.svg"
+                        alt="TopTechAgencies"
+                        width={180}
+                        height={40}
+                        className="h-10 w-auto"
+                        priority
+                    />
                 </Link>
 
                 {/* Desktop Nav */}

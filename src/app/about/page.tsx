@@ -8,9 +8,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
     title: 'About Us | Transforming Tech Discovery',
     description: 'Learn about TopTechAgencies.com, our mission to connect businesses with top-tier technology partners, and the experts behind our data-driven ranking methodology.',
-    alternates: {
-        canonical: '/about',
-    },
     openGraph: {
         title: 'About Us | Transforming Tech Discovery',
         description: 'Our mission to connect businesses with top-tier technology partners.',

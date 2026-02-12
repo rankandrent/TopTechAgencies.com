@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 60" width="460" height="60">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;800&amp;display=swap');
+  </style>
+  <text y="46" font-family="Outfit, sans-serif" font-size="44" letter-spacing="-0.5">
+    <tspan font-weight="800" fill="#1A1A1A">toptech</tspan><tspan font-weight="300" fill="rgba(26,26,26,0.4)">agencies</tspan>
+  </text>
+</svg>

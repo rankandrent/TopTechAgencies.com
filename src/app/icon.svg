@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;800&amp;display=swap');
+  </style>
+  <rect width="200" height="200" rx="44" fill="#1A1A1A"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Outfit, sans-serif" font-size="88" letter-spacing="-3">
+    <tspan font-weight="800" fill="#F5F0EB">t</tspan><tspan font-weight="300" fill="rgba(245,240,235,0.35)">a</tspan>
+  </text>
+</svg>

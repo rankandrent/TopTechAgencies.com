@@ -4,7 +4,7 @@ import { FAQSection } from '@/components/services/FAQSection'
 import { RelatedLinks } from '@/components/services/RelatedLinks'
 import { Container } from '@/components/layout/Container'
 import { H1, P } from '@/components/ui/Typography'
-import { AgencyEntry } from '@/components/blog/AgencyEntry'
+import { AgencyList } from '@/components/services/AgencyList'
 import { TableOfContents } from '@/components/blog/TableOfContents'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { SemanticSchema } from '@/components/seo/SemanticSchema'
@@ -349,19 +349,7 @@ export default async function ServiceCityPage({ params }: Props) {
                         <div className="flex flex-col lg:flex-row gap-16 relative">
                             <div className="lg:w-2/3 space-y-16">
                                 {matchedAgencies.length > 0 ? (
-                                    matchedAgencies.map((agency: any) => (
-                                        <div key={agency.rank}>
-                                            <AgencyEntry {...agency} />
-                                            <SemanticSchema type="LocalBusiness" data={{
-                                                name: agency.name,
-                                                description: agency.description,
-                                                url: agency.websiteUrl,
-                                                rating: agency.clutchRating,
-                                                city: city.name,
-                                                state: city.state
-                                            }} />
-                                        </div>
-                                    ))
+                                    <AgencyList agencies={matchedAgencies} city={city.name} />
                                 ) : (
                                     <div className="p-12 bg-bg-secondary rounded-3xl border border-border-light text-center">
                                         <H1 className="text-2xl mb-4">No agencies found for this search</H1>

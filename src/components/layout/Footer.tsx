@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Container } from './Container'
 
 export function Footer() {
@@ -13,9 +14,13 @@ export function Footer() {
                     {/* Brand Column */}
                     <div className="col-span-2 md:col-span-1 space-y-6">
                         <Link href="/" className="inline-block">
-                            <span className="text-xl font-bold tracking-tight text-text-primary">
-                                TopTechAgencies
-                            </span>
+                            <Image
+                                src="/logo.svg"
+                                alt="TopTechAgencies"
+                                width={180}
+                                height={40}
+                                className="h-10 w-auto"
+                            />
                         </Link>
 
                         <div className="space-y-1 text-sm text-text-secondary leading-relaxed">

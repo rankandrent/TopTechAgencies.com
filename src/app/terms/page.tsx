@@ -7,9 +7,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
     title: 'Terms of Service | TopTechAgencies.com',
     description: 'Terms and conditions for using TopTechAgencies.com.',
-    alternates: {
-        canonical: '/terms',
-    },
 }
 
 export default function TermsPage() {

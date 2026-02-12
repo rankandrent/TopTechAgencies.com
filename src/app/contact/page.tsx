@@ -10,9 +10,6 @@ import { Mail, MapPin, Phone } from 'lucide-react'
 export const metadata: Metadata = {
     title: 'Contact Us | TopTechAgencies.com',
     description: 'Get in touch with the TopTechAgencies.com team for partnerships, listing inquiries, or general questions.',
-    alternates: {
-        canonical: '/contact',
-    },
 }
 
 export default function ContactPage() {

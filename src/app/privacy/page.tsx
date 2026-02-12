@@ -7,9 +7,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
     title: 'Privacy Policy | TopTechAgencies.com',
     description: 'Our commitment to protecting your privacy and personal data.',
-    alternates: {
-        canonical: '/privacy',
-    },
 }
 
 export default function PrivacyPage() {
