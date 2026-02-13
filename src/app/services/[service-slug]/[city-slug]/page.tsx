@@ -125,9 +125,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!service || !city) return { title: 'Service Not Found' }
 
+    const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+    const currentYear = new Date().getFullYear();
+
     return {
-        title: `Top 10 ${service?.name} Companies in ${city?.name} (2026)`,
-        description: `Reviews of the Top 10 ${service?.name} Companies in ${city?.name} (2026). Compare ratings, pricing, and portfolios to find the best partner.`,
+        title: `Top 10 ${service?.name} Companies in ${city?.name} - ${currentMonth} ${currentYear}`,
+        description: `Reviews of the Top 10 ${service?.name} Companies in ${city?.name} (${currentMonth} ${currentYear}). Compare ratings, pricing, and portfolios to find the best partner.`,
         alternates: {
             canonical: `/services/${serviceSlug}/${citySlug}`,
         },
