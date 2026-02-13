@@ -126,8 +126,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!service || !city) return { title: 'Service Not Found' }
 
     return {
-        title: `Top ${service?.name} Companies in ${city?.name} (2025) | TopTechAgencies.com`,
-        description: `Find the best ${service?.name} companies in ${city?.name}, ${city?.state}. Compare top-rated agencies, view portfolios, and read verified reviews.`,
+        title: `Top 10 ${service?.name} Companies in ${city?.name} (2026)`,
+        description: `Reviews of the Top 10 ${service?.name} Companies in ${city?.name} (2026). Compare ratings, pricing, and portfolios to find the best partner.`,
         alternates: {
             canonical: `/services/${serviceSlug}/${citySlug}`,
         },
