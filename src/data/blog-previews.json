@@ -1,0 +1,20 @@
+[
+    {
+        "url": "/services/software-development",
+        "title": "Software Development Companies",
+        "description": "Find top software development companies.",
+        "image": "/images/blog/software-dev.jpg"
+    },
+    {
+        "url": "/services/ai-development",
+        "title": "Top AI Development Agencies",
+        "description": "Leading Artificial Intelligence companies.",
+        "image": "/images/blog/ai-dev.jpg"
+    },
+    {
+        "url": "/services/ui-ux-design-services",
+        "title": "Best UI/UX Design Studios",
+        "description": "Award-winning design agencies.",
+        "image": "/images/blog/ui-ux.jpg"
+    }
+]
