@@ -17,7 +17,7 @@ export default function TermsPage() {
                 <section className="pt-32 pb-12 bg-bg-secondary border-b border-border-light">
                     <Container className="max-w-3xl">
                         <H1 className="mb-4">Terms of Service</H1>
-                        <P className="text-text-secondary">Last Updated: February 10, 2026</P>
+                        <P className="text-text-secondary">Last Updated: February 13, 2026</P>
                     </Container>
                 </section>
 
