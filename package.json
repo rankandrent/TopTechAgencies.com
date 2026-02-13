@@ -26,7 +26,8 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "lightningcss-linux-x64-gnu": "1.30.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -45,8 +46,5 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
-  "optionalDependencies": {
-    "lightningcss-linux-x64-gnu": "^1.31.1"
   }
 }
