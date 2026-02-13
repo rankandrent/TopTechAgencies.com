@@ -134,6 +134,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         alternates: {
             canonical: `/services/${serviceSlug}/${citySlug}`,
         },
+        keywords: [
+            `Top ${service?.name} Companies in ${city?.name}`,
+            `Best ${service?.name} Agencies ${city?.name}`,
+            `${city?.name} ${service?.name} Services`,
+            `${service?.name} Firms ${city?.name}`,
+            `Top 10 ${service?.name} Companies ${city?.name}`,
+            `Hire ${service?.name} Developers in ${city?.name}`,
+            `${service?.name} Experts ${city?.name}`
+        ],
         openGraph: {
             title: `Top ${service?.name} Companies in ${city?.name}`,
             description: `Compare the best ${service?.name.toLowerCase()} agencies in ${city?.name}. Reviews, ratings, and reliable data.`,
@@ -323,7 +332,15 @@ export default async function ServiceCityPage({ params }: Props) {
             <SemanticSchema type="ItemList" data={{
                 title: `Best ${service.name} Companies in ${city.name}`,
                 description: `Top ${matchedAgencies.length} design professionals in ${city.name}`,
-                items: matchedAgencies.map((a: any) => ({ name: a.name, url: a.websiteUrl }))
+                items: matchedAgencies.map((a: any) => ({
+                    name: a.name,
+                    url: a.websiteUrl,
+                    rating: a.clutchRating,
+                    reviews: a.reviewsCount,
+                    city: city.name,
+                    state: city.state,
+                    image: a.logoUrl // Assuming logoUrl or similar is available or fallback
+                }))
             }} />
 
             <main className="flex-grow">

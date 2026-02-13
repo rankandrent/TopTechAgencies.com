@@ -43,7 +43,18 @@ export function SemanticSchema({ type, data }: SemanticSchemaProps) {
                 item: {
                     '@type': 'LocalBusiness',
                     name: item.name,
-                    url: item.url
+                    url: item.url,
+                    image: item.image,
+                    aggregateRating: item.rating ? {
+                        '@type': 'AggregateRating',
+                        ratingValue: item.rating,
+                        reviewCount: item.reviews || 1
+                    } : undefined,
+                    address: item.city ? {
+                        '@type': 'PostalAddress',
+                        addressLocality: item.city,
+                        addressRegion: item.state
+                    } : undefined
                 }
             }))
         }
