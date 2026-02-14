@@ -64,5 +64,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.6,
     }))
 
+    // Individual Agency Pages
+    // Note: We can fetch these from Prisma or constants. 
+    // Since we want dynamic, we'll need to make this sitemap async in Next.js 13+
+    // But sitemap() can return a Promise.
+
     return [...staticPages, ...servicePages, ...serviceCityPages, ...blogPages]
 }
+
+// To properly handle async sitemap with Prisma, we'd need to change the function signature
+// but for now, the user specifically asked for company.xml which I already created.
+// I will keep company.xml as the primary way for programmatic pages as requested.

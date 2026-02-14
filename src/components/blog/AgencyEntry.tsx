@@ -8,6 +8,7 @@ import { Star, Send, DollarSign, Clock, Users, Calendar, MessageSquare, MapPin }
 import { useState } from 'react'
 import { Modal } from '@/components/ui/Modal'
 import { ContactForm } from '@/components/ui/ContactForm'
+import Link from 'next/link'
 
 interface AgencyEntryProps {
     rank: number
@@ -27,6 +28,7 @@ interface AgencyEntryProps {
     clutchUrl?: string | null
     location?: string
     isProminent?: boolean
+    slug?: string | null
     onConnect?: () => void
 }
 
@@ -49,6 +51,7 @@ export function AgencyEntry({
     clutchUrl,
     location,
     isProminent = false,
+    slug,
     onConnect
 }: AgencyEntryProps) {
     const [isContactModalOpen, setIsContactModalOpen] = useState(false)
@@ -113,7 +116,15 @@ export function AgencyEntry({
                                 <p className="text-xs uppercase tracking-widest text-accent-peach-text font-semibold mb-2">
                                     Featured Agency
                                 </p>
-                                <H2 className="text-2xl md:text-3xl">{name}</H2>
+                                {slug ? (
+                                    <Link href={`/agency/${slug}`} className="group/link">
+                                        <H2 className="text-2xl md:text-3xl group-hover/link:text-accent-peach transition-colors">
+                                            {name}
+                                        </H2>
+                                    </Link>
+                                ) : (
+                                    <H2 className="text-2xl md:text-3xl">{name}</H2>
+                                )}
                             </div>
                         </div>
 
