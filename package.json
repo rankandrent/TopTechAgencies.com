@@ -47,6 +47,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "optionalDependencies": {
-    "lightningcss-linux-x64-gnu": "1.30.2"
+    "lightningcss-linux-x64-gnu": "1.30.2",
+    "@tailwindcss/oxide-linux-x64-musl": "4.0.0"
   }
 }
