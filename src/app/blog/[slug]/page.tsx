@@ -10,7 +10,11 @@ import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import prisma from '@/lib/db'
+import clientPromise from '@/lib/mongodb'
+
+function slugify(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+}
 
 // Fallback data - only used if DB has no entries for a city
 const FALLBACK_AGENCIES = [
@@ -76,39 +80,75 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         return <div>Post not found</div>
     }
 
-    // Fetch agencies from DB (with fallback)
-    const blogPost = await prisma.blogPost.findUnique({
-        where: { slug },
-        include: {
-            agencies: {
-                include: {
-                    agency: true
-                },
-                orderBy: {
-                    rank: 'asc'
-                }
-            }
-        }
+    // Fetch agencies from MongoDB
+    const client = await clientPromise
+    const db = client.db('search_tkxel')
+    const collection = db.collection('agencies')
+
+    const rawAgencies = await collection.find({
+        table_name: 'agencies',
+        locality: { $regex: city.name, $options: 'i' },
+        $or: [
+            { services: { $regex: 'design', $options: 'i' } },
+            { services: { $regex: 'ux', $options: 'i' } },
+            { services: { $regex: 'ui', $options: 'i' } },
+        ]
+    }).sort({ avg_rating: -1 }).limit(20).toArray()
+
+    // Deduplicate
+    const seenNames = new Set<string>()
+    const uniqueAgencies = rawAgencies.filter((a: any) => {
+        const name = a.name?.toLowerCase().trim()
+        if (!name || seenNames.has(name)) return false
+        seenNames.add(name)
+        return true
     })
 
-    const agencies = blogPost ? blogPost.agencies.map(entry => ({
-        rank: entry.rank,
-        name: entry.agency.name,
-        slug: entry.agency.slug,
-        tagline: entry.agency.tagline,
-        clutchRating: entry.agency.clutchRating,
-        websiteUrl: entry.agency.websiteUrl,
-        services: entry.agency.services,
-        description: entry.overview || entry.agency.description,
-        whyChoose: entry.whyChoose || entry.agency.longDescription,
-        minProjectSize: entry.agency.minProjectSize,
-        hourlyRate: entry.agency.avgHourlyRate,
-        employeesCount: entry.agency.teamSize,
-        yearFounded: entry.agency.founded,
-        reviewsCount: entry.agency.reviewCount,
-        clutchUrl: entry.agency.clutchUrl,
-        location: `${entry.agency.city}, ${entry.agency.state || ''}`
-    })) : FALLBACK_AGENCIES;
+    // Filter out tkxel (will be added as #1)
+    const filteredAgencies = uniqueAgencies
+        .filter((a: any) => !a.name?.toLowerCase().includes('tkxel'))
+        .slice(0, 9)
+
+    const tkxelEntry = {
+        rank: 1,
+        name: 'tkxel',
+        slug: 'tkxel',
+        tagline: 'Top-Rated Digital Transformation Partner',
+        clutchRating: 5.0,
+        websiteUrl: 'https://tkxel.com',
+        services: ['Software Development', 'UI/UX Design', 'Mobile Apps', 'AI Solutions'],
+        description: 'tkxel is a leading technology partner for Fortune 500s and ambitious startups. With 15+ years of excellence, they craft award-winning digital experiences that drive real business growth.',
+        whyChoose: "tkxel stands out for its **holistic approach**—combining world-class design with robust engineering. They don't just design interfaces; they build **scalable digital ecosystems**. With 700+ experts and 24/7 support, they act as a true extension of your team.",
+        minProjectSize: '$25,000+',
+        hourlyRate: '$25 - $49 / hr',
+        employeesCount: '700+',
+        yearFounded: '2008',
+        reviewsCount: 85,
+        clutchUrl: 'tkxel',
+    }
+
+    let agencies = [tkxelEntry, ...filteredAgencies.map((agency: any, index: number) => ({
+        rank: index + 2,
+        name: agency.name,
+        slug: slugify(agency.name),
+        tagline: agency.generated_desc?.split('.')[0] || `Top Design Agency in ${city.name}`,
+        clutchRating: parseFloat(agency.avg_rating) || 4.5,
+        websiteUrl: (agency.url || '').replace(/\s+/g, '').replace(/%20/g, ''),
+        services: agency.services?.split(',').map((s: string) => s.trim()) || ['UI/UX Design'],
+        description: agency.description || '',
+        whyChoose: agency.generated_desc || `Leading experts in UI/UX design with a proven track record in ${city.name}.`,
+        minProjectSize: agency.min_project_size || 'Varies',
+        hourlyRate: agency.hourly_rate || 'Contact for pricing',
+        employeesCount: agency.employees_count || '10+',
+        yearFounded: agency.year_founded || 'N/A',
+        reviewsCount: parseInt(agency.reviews) || 0,
+        clutchUrl: agency.clutch_url || null,
+        location: agency.locality || city.name,
+    }))]
+
+    if (agencies.length <= 1) {
+        agencies = FALLBACK_AGENCIES
+    }
 
     const tocItems = agencies.map((agency: any) => ({
         id: agency.name.toLowerCase().replace(/\s+/g, '-'),

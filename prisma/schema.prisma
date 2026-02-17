@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -98,7 +99,30 @@ model City {
   population      Int?
   techScene       String?  @db.Text // Description of local tech scene
   
-  // For generating unique content
+// For generating unique content
   industries      String[] // Key local industries
   landmarks       String[] // For contextual content
 }
+
+model Article {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?  @db.Text
+  content         String   @db.Text
+  featuredImage   String?
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  
+  // Metadata
+  author          String   @default("Top Tech Agencies Team")
+  status          String   @default("DRAFT") // DRAFT, PUBLISHED
+  publishedAt     DateTime?
+  tags            String[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

@@ -178,6 +178,7 @@ export default async function ServiceCityPage({ params }: Props) {
             matchedAgencies = curatedData.map((agency: any) => ({
                 rank: agency.rank,
                 name: agency.name,
+                slug: agency.slug || agency.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
                 tagline: agency.tagline || `Premium ${service.name}`,
                 clutchRating: parseFloat(agency.clutch_rating) || 4.5,
                 websiteUrl: agency.website_url || '',
@@ -254,6 +255,7 @@ export default async function ServiceCityPage({ params }: Props) {
         const tkxelEntry = {
             rank: 1,
             name: 'tkxel',
+            slug: 'tkxel',
             tagline: `Leading ${service.name} Company — Trusted by Fortune 500 Brands`,
             clutchRating: 5.0,
             websiteUrl: 'https://www.tkxel.com',
@@ -301,6 +303,7 @@ export default async function ServiceCityPage({ params }: Props) {
             return {
                 rank: index + 2,
                 name: agency.name,
+                slug: agency.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
                 tagline: formatText(agency.generated_desc?.split('.')[0]) || `Premium ${service.name} in ${city.name}`,
                 clutchRating: rating,
                 websiteUrl: (agency.url || '').replace(/\s+/g, '').replace(/%20/g, ''),

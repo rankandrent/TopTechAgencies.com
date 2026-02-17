@@ -12,7 +12,7 @@ const supabase = createClient(
 );
 
 export default function DashboardPage() {
-    const [stats, setStats] = useState({ total: 0, newToday: 0 });
+    const [stats, setStats] = useState({ total: 0, newCount: 0, contactedCount: 0, closedCount: 0 });
     const [recentSubmissions, setRecentSubmissions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -28,6 +28,24 @@ export default function DashboardPage() {
 
                 if (countError) console.error('Count error:', countError);
 
+                // Fetch new submissions count
+                const { count: newCount } = await supabase
+                    .from('contact_submissions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'new');
+
+                // Fetch contacted count
+                const { count: contactedCount } = await supabase
+                    .from('contact_submissions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'contacted');
+
+                // Fetch closed count
+                const { count: closedCount } = await supabase
+                    .from('contact_submissions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'closed');
+
                 // Fetch recent submissions
                 const { data: submissions, error: fetchError } = await supabase
                     .from('contact_submissions')
@@ -39,7 +57,9 @@ export default function DashboardPage() {
 
                 setStats({
                     total: totalCount || 0,
-                    newToday: 0
+                    newCount: newCount || 0,
+                    contactedCount: contactedCount || 0,
+                    closedCount: closedCount || 0,
                 });
                 setRecentSubmissions(submissions || []);
             } catch (err) {
@@ -65,27 +85,37 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-medium text-gray-500">Total Inquiries</h3>
-                        <MessageCircle className="w-5 h-5 text-blue-500" />
+                        <h3 className="text-sm font-medium text-gray-500">Total Leads</h3>
+                        <MessageCircle className="w-5 h-5 text-gray-400" />
                     </div>
                     <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="bg-blue-50 p-6 rounded-xl border-2 border-blue-200 shadow-sm relative overflow-hidden">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-medium text-gray-500">Response Rate</h3>
-                        <TrendingUp className="w-5 h-5 text-green-500" />
+                        <h3 className="text-sm font-bold text-blue-700">🔵 New Leads</h3>
+                        {stats.newCount > 0 && (
+                            <span className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+                        )}
                     </div>
-                    <p className="text-3xl font-bold text-gray-900">--%</p>
+                    <p className="text-3xl font-extrabold text-blue-700">{stats.newCount}</p>
+                    <p className="text-xs text-blue-500 mt-1">Awaiting response</p>
                 </div>
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-medium text-gray-500">Active Agencies</h3>
-                        <Users className="w-5 h-5 text-purple-500" />
+                        <h3 className="text-sm font-medium text-gray-500">🟢 Contacted</h3>
+                        <TrendingUp className="w-5 h-5 text-green-500" />
                     </div>
-                    <p className="text-3xl font-bold text-gray-900">--</p>
+                    <p className="text-3xl font-bold text-gray-900">{stats.contactedCount}</p>
+                </div>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-medium text-gray-500">⚫ Closed</h3>
+                        <Users className="w-5 h-5 text-gray-400" />
+                    </div>
+                    <p className="text-3xl font-bold text-gray-900">{stats.closedCount}</p>
                 </div>
             </div>
 
@@ -162,8 +192,8 @@ export default function DashboardPage() {
                                                 }
                                             }}
                                             className={`text-xs font-medium px-3 py-1.5 rounded-full border-0 cursor-pointer appearance-none focus:ring-2 focus:ring-offset-1 ${sub.status === 'new' ? 'bg-blue-100 text-blue-800 focus:ring-blue-300' :
-                                                    sub.status === 'contacted' ? 'bg-green-100 text-green-800 focus:ring-green-300' :
-                                                        'bg-gray-100 text-gray-800 focus:ring-gray-300'
+                                                sub.status === 'contacted' ? 'bg-green-100 text-green-800 focus:ring-green-300' :
+                                                    'bg-gray-100 text-gray-800 focus:ring-gray-300'
                                                 }`}
                                         >
                                             <option value="new">🔵 New</option>

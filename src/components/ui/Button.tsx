@@ -12,10 +12,13 @@ import { VariantProps, cva } from 'class-variance-authority'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
     size?: 'sm' | 'md' | 'lg'
+    href?: string
+    target?: string
+    rel?: string
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
+    ({ className, variant = 'primary', size = 'md', href, ...props }, ref) => {
         const variants = {
             primary: 'bg-text-primary text-bg-primary hover:bg-text-secondary transition-colors',
             secondary: 'bg-accent-peach text-accent-peach-text hover:bg-opacity-90',
@@ -29,18 +32,32 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             lg: 'px-8 py-4 text-lg',
         }
 
+        const classes = cn(
+            'inline-flex items-center justify-center rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-text-primary/20 disabled:pointer-events-none disabled:opacity-50',
+            variants[variant],
+            sizes[size],
+            className
+        )
+
+        if (href) {
+            return (
+                <a
+                    href={href}
+                    className={classes}
+                    ref={ref as React.Ref<HTMLAnchorElement>}
+                    {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+                />
+            )
+        }
+
         return (
             <button
-                ref={ref}
-                className={cn(
-                    'inline-flex items-center justify-center rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-text-primary/20 disabled:pointer-events-none disabled:opacity-50',
-                    variants[variant],
-                    sizes[size],
-                    className
-                )}
+                ref={ref as React.Ref<HTMLButtonElement>}
+                className={classes}
                 {...props}
             />
         )
     }
 )
 Button.displayName = 'Button'
+

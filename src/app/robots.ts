@@ -9,6 +9,9 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/api/', '/scripts/', '/_next/'],
             },
         ],
-        sitemap: 'https://toptechagencies.com/sitemap.xml',
+        sitemap: [
+            'https://toptechagencies.com/sitemap.xml',
+            'https://toptechagencies.com/agency.xml',
+        ],
     }
 }
