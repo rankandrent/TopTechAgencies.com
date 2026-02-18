@@ -1,43 +1,76 @@
-import { NextResponse } from 'next/server'
+
 import clientPromise from '@/lib/mongodb'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 86400 // Revalidate every 24 hours
 
 function slugify(name: string): string {
-    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+    if (!name) return ''
+    return name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '')
+}
+
+function escapeXml(unsafe: string): string {
+    return unsafe.replace(/[<>&'"]/g, (c) => {
+        switch (c) {
+            case '<': return '&lt;'
+            case '>': return '&gt;'
+            case '&': return '&amp;'
+            case '\'': return '&apos;'
+            case '"': return '&quot;'
+            default: return c
+        }
+    })
 }
 
 export async function GET() {
-    const client = await clientPromise
-    const db = client.db('search_tkxel')
-    const collection = db.collection('agencies')
+    try {
+        const client = await clientPromise
+        const db = client.db('search_tkxel')
+        const collection = db.collection('agencies')
 
-    const agencies = await collection.find(
-        { table_name: 'agencies' },
-        { projection: { name: 1 } }
-    ).toArray()
+        // Fetch only necessary fields to minimize data transfer
+        const agencies = await collection
+            .find({}, { projection: { name: 1, updated_at: 1, table_name: 1 } }) // Filter by table_name if needed
+            .toArray()
 
-    const baseUrl = 'https://toptechagencies.com'
-    const now = new Date().toISOString()
+        const baseUrl = 'https://toptechagencies.com'
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${agencies
-            .filter((a: any) => a.name && a.name.trim())
-            .map((agency: any) => `  <url>
-    <loc>${baseUrl}/agency/${slugify(agency.name)}</loc>
-    <lastmod>${now}</lastmod>
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+
+        if (agencies && agencies.length > 0) {
+            for (const agency of agencies) {
+                if (!agency.name) continue
+
+                const slug = slugify(agency.name)
+                // Use updated_at if available, otherwise default to a static date or now
+                // Assuming updated_at might be a string or Date
+                const lastmod = agency.updated_at
+                    ? new Date(agency.updated_at).toISOString()
+                    : new Date().toISOString()
+
+                xml += `
+  <url>
+    <loc>${baseUrl}/agency/${escapeXml(slug)}</loc>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>`)
-            .join('\n')}
+  </url>`
+            }
+        }
+
+        xml += `
 </urlset>`
 
-    return new NextResponse(sitemap, {
-        headers: {
-            'Content-Type': 'application/xml',
-            'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
-        },
-    })
+        return new Response(xml, {
+            headers: {
+                'Content-Type': 'application/xml',
+                'Cache-Control': 'public, max-age=3600, s-maxage=3600', // Cache for 1 hour
+            },
+        })
+    } catch (error) {
+        console.error('Error generating agency sitemap:', error)
+        return new Response('Error generating sitemap', { status: 500 })
+    }
 }
