@@ -74,7 +74,7 @@ export function AgencyCTASection({ agencyName, websiteUrl }: AgencyActionsProps)
                         <LeadFormModal
                             agencyName={agencyName}
                             trigger={
-                                <span className="inline-flex items-center gap-2 px-8 py-3.5 bg-accent-peach text-white font-bold rounded-full hover:bg-accent-peach/90 transition-colors text-lg cursor-pointer">
+                                <span className="inline-flex items-center gap-2 px-8 py-3.5 bg-accent-peach text-accent-peach-text font-bold rounded-full hover:bg-accent-peach/90 transition-colors text-lg cursor-pointer">
                                     <Send className="w-5 h-5" /> Request Introduction
                                 </span>
                             }

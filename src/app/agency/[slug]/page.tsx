@@ -441,7 +441,7 @@ export default async function AgencyPage({ params }: PageProps) {
                     <nav className="flex items-center gap-2 text-sm text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
                         <a href="/" className="hover:text-accent-peach transition-colors">Home</a>
                         <span>/</span>
-                        <a href="/services" className="hover:text-accent-peach transition-colors">Agencies</a>
+                        <a href="/services" className="hover:text-accent-peach-text transition-colors">Agencies</a>
                         <span>/</span>
                         <span className="text-text-primary font-medium">{agency.name}</span>
                     </nav>

@@ -118,7 +118,7 @@ export function AgencyEntry({
                                 </p>
                                 {slug ? (
                                     <Link href={`/agency/${slug}`} className="group/link">
-                                        <H2 className="text-2xl md:text-3xl group-hover/link:text-accent-peach transition-colors">
+                                        <H2 className="text-2xl md:text-3xl group-hover/link:text-accent-peach-text transition-colors">
                                             {name}
                                         </H2>
                                     </Link>
