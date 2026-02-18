@@ -680,7 +680,7 @@ export default async function AgencyPage({ params }: PageProps) {
                                                         )}
                                                     </div>
                                                     <div className="flex-grow min-w-0">
-                                                        <h4 className="font-bold text-text-primary group-hover:text-accent-peach transition-colors truncate">{sim.name}</h4>
+                                                        <h4 className="font-bold text-text-primary group-hover:text-accent-peach-text transition-colors truncate">{sim.name}</h4>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             {simRating > 0 && (
                                                                 <span className="flex items-center gap-1 text-xs font-semibold text-yellow-600">
