@@ -133,10 +133,10 @@ export function SemanticSchema({ type, data }: SemanticSchemaProps) {
             }],
             publisher: {
                 '@type': 'Organization',
-                name: 'Eleken',
+                name: 'TopTechAgencies.com',
                 logo: {
                     '@type': 'ImageObject',
-                    url: 'https://toptechagencies.com/logo.png' // Needs actual logo URL
+                    url: 'https://toptechagencies.com/logo.png'
                 }
             }
         }

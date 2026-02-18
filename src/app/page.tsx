@@ -37,9 +37,9 @@ export default function Home() {
           availableLanguage: 'en'
         },
         sameAs: [
-          'https://www.linkedin.com/company/tkxel',
-          'https://twitter.com/tkxel',
-          'https://www.facebook.com/tkxel'
+          'https://www.linkedin.com/company/toptechagencies',
+          'https://twitter.com/toptechagencies',
+          'https://www.facebook.com/toptechagencies'
         ]
       }} />
       <SemanticSchema type="WebSite" data={{

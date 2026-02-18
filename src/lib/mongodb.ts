@@ -12,7 +12,8 @@ let client;
 let clientPromise: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI && process.env.NODE_ENV === 'production') {
-    throw new Error('Please add your Mongo URI to .env.local');
+    console.error('⚠️ MONGODB_URI is missing in .env.local');
+    // throw new Error('Please add your Mongo URI to .env.local');
 }
 
 if (process.env.NODE_ENV === 'development') {

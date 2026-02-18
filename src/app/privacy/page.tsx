@@ -2,17 +2,25 @@ import { Container } from '@/components/layout/Container'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { H1, H2, P } from '@/components/ui/Typography'
+import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Privacy Policy | TopTechAgencies.com',
     description: 'Our commitment to protecting your privacy and personal data.',
+    alternates: {
+        canonical: 'https://toptechagencies.com/privacy',
+    },
 }
 
 export default function PrivacyPage() {
     return (
         <div className="min-h-screen flex flex-col font-sans">
             <Navbar />
+            <SemanticSchema type="BreadcrumbList" data={[
+                { name: 'Home', url: '/' },
+                { name: 'Privacy Policy', url: '/privacy' }
+            ]} />
             <main className="flex-grow">
                 <section className="pt-32 pb-12 bg-bg-secondary border-b border-border-light">
                     <Container className="max-w-3xl">

@@ -5,7 +5,7 @@ import { Container } from '@/components/layout/Container'
 import { H1, H2, P } from '@/components/ui/Typography'
 import { AgencyEntry } from '@/components/blog/AgencyEntry'
 import { TableOfContents } from '@/components/blog/TableOfContents'
-import { CITIES } from '@/lib/constants'
+import { CITIES, FALLBACK_AGENCIES } from '@/lib/constants'
 import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -16,26 +16,7 @@ function slugify(name: string): string {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
 }
 
-// Fallback data - only used if DB has no entries for a city
-const FALLBACK_AGENCIES = [
-    {
-        rank: 1,
-        name: "tkxel",
-        slug: "tkxel",
-        tagline: "Top-Rated Digital Transformation Partner",
-        clutchRating: 5.0,
-        websiteUrl: "https://tkxel.com",
-        services: ["Software Development", "UI/UX Design", "Mobile Apps", "AI Solutions"],
-        description: "tkxel is a leading technology partner for Fortune 500s and ambitious startups. With 15+ years of excellence, they craft award-winning digital experiences that drive real business growth. Their design philosophy blends aesthetic brilliance with data-driven usability.",
-        whyChoose: "tkxel stands out for its **holistic approach**—combining world-class design with robust engineering. They don't just design interfaces; they build **scalable digital ecosystems**. With 700+ experts and 24/7 support, they act as a true extension of your team.",
-        minProjectSize: "$25,000+",
-        hourlyRate: "$25 - $49 / hr",
-        employeesCount: "700+",
-        yearFounded: "2008",
-        reviewsCount: 85,
-        clutchUrl: "tkxel",
-    }
-]
+
 
 export async function generateStaticParams() {
     return CITIES.map((city) => ({
@@ -165,9 +146,15 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                     image: `/og/blog/${slug}`,
                     datePublished: '2025-02-10T00:00:00.000Z',
                     dateModified: new Date().toISOString(),
-                    authorName: 'TopTechAgencies Editorial Team'
+                    authorName: 'TopTechAgencies Editorial Team',
+                    authorUrl: 'https://toptechagencies.com/about'
                 }}
             />
+            <SemanticSchema type="BreadcrumbList" data={[
+                { name: 'Home', url: '/' },
+                { name: 'Blog', url: '/blog' },
+                { name: `UI/UX Agencies in ${city.name}` }
+            ]} />
             <Navbar />
 
             <main className="flex-grow">
@@ -239,6 +226,24 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                             location={agency.location}
                                         />
                                     ))}
+                                </div>
+
+                                {/* Author Bio — E-E-A-T Trust Signal */}
+                                <div className="mt-16 p-8 rounded-3xl bg-bg-secondary border border-border-light">
+                                    <div className="flex items-start gap-6">
+                                        <div className="w-16 h-16 rounded-full bg-accent-peach/20 flex items-center justify-center text-accent-peach-text flex-shrink-0">
+                                            <span className="text-xl font-bold">TT</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-lg mb-1">TopTechAgencies Editorial Team</h3>
+                                            <p className="text-sm text-accent-peach-text font-medium mb-3">Expert Reviewers • Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                                            <p className="text-sm text-text-secondary mb-3">
+                                                Our editorial team consists of software engineers, UX researchers, and agency consultants with combined 50+ years of industry experience.
+                                                Every agency listed is independently reviewed using our <a href="/methodology" className="text-accent-peach-text hover:underline font-medium">transparent ranking methodology</a>.
+                                            </p>
+                                            <p className="text-xs text-text-muted">📧 Questions? <a href="/contact" className="text-accent-peach-text hover:underline">Contact our research team</a></p>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="mt-24 p-10 rounded-3xl bg-accent-peach/10 border border-accent-peach/30">

@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Container } from '@/components/layout/Container'
 import { H1, H2, P } from '@/components/ui/Typography'
 import { CITIES, SERVICES } from '@/lib/constants'
+import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, MapPin } from 'lucide-react'
@@ -27,15 +28,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `Top ${service.name} Companies | TopTechAgencies.com`,
-        description: `Find the best ${service.name} companies. Compare trusted agencies, view portfolios, and read client reviews.`,
+        description: `Find the best ${service.name} companies across 51 US cities. Compare trusted agencies, view portfolios, and read client reviews.`,
         alternates: {
             canonical: `/services/${serviceSlug}`,
         },
         openGraph: {
             title: `Top ${service.name} Companies`,
-            description: `Find the best ${service.name} companies.`,
+            description: `Find the best ${service.name} companies across 51 US cities.`,
             type: 'website',
-            images: [{ url: `/og/services/${serviceSlug}`, width: 1200, height: 630 }],
         }
     }
 }
@@ -51,6 +51,11 @@ export default async function ServiceHubPage({ params }: Props) {
     return (
         <div className="min-h-screen flex flex-col font-sans">
             <Navbar />
+            <SemanticSchema type="BreadcrumbList" data={[
+                { name: 'Home', url: '/' },
+                { name: 'Services', url: '/services' },
+                { name: service.name }
+            ]} />
             <main className="flex-grow">
                 {/* Hub Header */}
                 <section className="bg-bg-secondary pt-32 pb-20 border-b border-border-light">

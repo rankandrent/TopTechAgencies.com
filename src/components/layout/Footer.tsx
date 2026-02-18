@@ -64,7 +64,7 @@ export function Footer() {
                     <div>
                         <h4 className="text-sm text-text-muted mb-6">Company</h4>
                         <ul className="space-y-4">
-                            <li><Link href="/case-studies" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">Case Studies</Link></li>
+                            <li><Link href="/methodology" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">Our Methodology</Link></li>
                             <li><Link href="/services" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">All Services</Link></li>
                             <li><Link href="/about" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">About</Link></li>
                             <li><Link href="/blog" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">Blog</Link></li>
@@ -107,9 +107,11 @@ export function Footer() {
 
                     {/* Stories / Resources */}
                     <div>
-                        <h4 className="text-sm text-text-muted italic mb-6">Stories</h4>
+                        <h4 className="text-sm text-text-muted italic mb-6">Resources</h4>
                         <ul className="space-y-4">
-                            <li><Link href="/blog" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">How to choose a UI/UX Agency</Link></li>
+                            <li><Link href="/about" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">About Our Research</Link></li>
+                            <li><Link href="/methodology" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">Ranking Methodology</Link></li>
+                            <li><Link href="/contact" className="text-sm text-text-primary hover:bg-border-light rounded-full transition-colors px-3 py-1 -mx-3 -my-1 inline-block">List Your Agency</Link></li>
                         </ul>
                     </div>
                 </div>

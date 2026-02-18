@@ -94,39 +94,73 @@ function highlightKeyData(text: string): string {
 }
 
 async function getAgencyBySlug(slug: string) {
-    const client = await clientPromise
-    const db = client.db('search_tkxel')
-    const collection = db.collection('agencies')
+    try {
+        const client = await clientPromise
+        const db = client.db('search_tkxel')
+        const collection = db.collection('agencies')
 
-    // Find agency by matching slug derived from name
-    const agencies = await collection.find({ table_name: 'agencies' }).toArray()
-    return agencies.find(a => slugify(a.name || '') === slug) || null
+        // Build a regex from the slug to match the agency name directly in MongoDB
+        // e.g. slug "acme-corp" → regex that matches "Acme Corp" (case-insensitive)
+        const namePattern = slug.replace(/-/g, '[^a-z0-9]*')
+        const agencies = await collection.find({
+            table_name: 'agencies',
+            name: { $regex: new RegExp(`^${namePattern}$`, 'i') }
+        }).limit(5).toArray()
+
+        // If regex match found multiple, find the exact slug match
+        if (agencies.length === 1) return agencies[0]
+        if (agencies.length > 1) {
+            return agencies.find(a => slugify(a.name || '') === slug) || agencies[0]
+        }
+
+        // Fallback: broader search if exact regex didn't match
+        const words = slug.split('-').filter(w => w.length > 1)
+        if (words.length > 0) {
+            const fallbackPattern = words.map(w => `(?=.*${w})`).join('')
+            const fallbackResults = await collection.find({
+                table_name: 'agencies',
+                name: { $regex: new RegExp(fallbackPattern, 'i') }
+            }).limit(20).toArray()
+
+            return fallbackResults.find(a => slugify(a.name || '') === slug) || null
+        }
+
+        return null
+    } catch (error) {
+        console.error('Error in getAgencyBySlug:', error)
+        return null
+    }
 }
 
 async function getSimilarAgencies(currentName: string, services: string, locality: string, limit: number = 4) {
-    const client = await clientPromise
-    const db = client.db('search_tkxel')
-    const collection = db.collection('agencies')
+    try {
+        const client = await clientPromise
+        const db = client.db('search_tkxel')
+        const collection = db.collection('agencies')
 
-    const serviceTerms = services?.split(',').slice(0, 2).map((s: string) => s.trim()) || []
-    const orConditions = serviceTerms.map((term: string) => ({
-        services: { $regex: term, $options: 'i' }
-    }))
+        const serviceTerms = services?.split(',').slice(0, 2).map((s: string) => s.trim()) || []
+        const orConditions = serviceTerms.map((term: string) => ({
+            services: { $regex: term, $options: 'i' }
+        }))
 
-    const results = await collection.find({
-        table_name: 'agencies',
-        name: { $ne: currentName },
-        ...(orConditions.length > 0 ? { $or: orConditions } : {}),
-    }).sort({ avg_rating: -1 }).limit(limit + 2).toArray()
+        const results = await collection.find({
+            table_name: 'agencies',
+            name: { $ne: currentName },
+            ...(orConditions.length > 0 ? { $or: orConditions } : {}),
+        }).sort({ avg_rating: -1 }).limit(limit + 2).toArray()
 
-    // Deduplicate and limit
-    const seen = new Set<string>()
-    return results.filter((a: any) => {
-        const n = a.name?.toLowerCase().trim()
-        if (!n || seen.has(n)) return false
-        seen.add(n)
-        return true
-    }).slice(0, limit)
+        // Deduplicate and limit
+        const seen = new Set<string>()
+        return results.filter((a: any) => {
+            const n = a.name?.toLowerCase().trim()
+            if (!n || seen.has(n)) return false
+            seen.add(n)
+            return true
+        }).slice(0, limit)
+    } catch (error) {
+        console.error('Error in getSimilarAgencies:', error)
+        return []
+    }
 }
 
 function generateFAQs(agency: any, services: string[], location: string, rating: number, reviewCount: number) {
@@ -219,7 +253,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
         title,
         description,
-        keywords,
         alternates: {
             canonical: canonicalUrl,
         },

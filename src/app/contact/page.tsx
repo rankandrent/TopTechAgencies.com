@@ -6,13 +6,38 @@ import { Button } from '@/components/ui/Button'
 import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 import { Mail, MapPin, Phone } from 'lucide-react'
+import Script from 'next/script'
 
 export const metadata: Metadata = {
     title: 'Contact Us | TopTechAgencies.com',
     description: 'Get in touch with the TopTechAgencies.com team for partnerships, listing inquiries, or general questions.',
+    alternates: {
+        canonical: 'https://toptechagencies.com/contact',
+    },
 }
 
 export default function ContactPage() {
+    const contactSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'ContactPage',
+        name: 'Contact TopTechAgencies.com',
+        url: 'https://toptechagencies.com/contact',
+        mainEntity: {
+            '@type': 'Organization',
+            name: 'TopTechAgencies.com',
+            telephone: '+1-571-554-6682',
+            email: 'hello@tkxel.com',
+            address: {
+                '@type': 'PostalAddress',
+                streetAddress: '11951 Freedom Drive, 13th Floor',
+                addressLocality: 'Reston',
+                addressRegion: 'VA',
+                postalCode: '20190',
+                addressCountry: 'US'
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen flex flex-col font-sans">
             <Navbar />
@@ -20,6 +45,11 @@ export default function ContactPage() {
                 { name: 'Home', url: '/' },
                 { name: 'Contact', url: '/contact' }
             ]} />
+            <Script
+                id="contact-schema"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+            />
 
             <main className="flex-grow">
                 <section className="pt-32 pb-20 bg-bg-secondary border-b border-border-light">

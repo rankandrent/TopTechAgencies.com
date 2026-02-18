@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { FAQSection } from '@/components/services/FAQSection'
+import { CostCalculator } from '@/components/ui/CostCalculator'
 import { RelatedLinks } from '@/components/services/RelatedLinks'
 import { Container } from '@/components/layout/Container'
 import { H1, P } from '@/components/ui/Typography'
@@ -8,7 +9,7 @@ import { AgencyList } from '@/components/services/AgencyList'
 import { TableOfContents } from '@/components/blog/TableOfContents'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { SemanticSchema } from '@/components/seo/SemanticSchema'
-import { CITIES, SERVICES } from '@/lib/constants'
+import { CITIES, SERVICES, FALLBACK_AGENCIES } from '@/lib/constants'
 import { Metadata } from 'next'
 import clientPromise from '@/lib/mongodb'
 import Link from 'next/link'
@@ -134,15 +135,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         alternates: {
             canonical: `/services/${serviceSlug}/${citySlug}`,
         },
-        keywords: [
-            `Top ${service?.name} Companies in ${city?.name}`,
-            `Best ${service?.name} Agencies ${city?.name}`,
-            `${city?.name} ${service?.name} Services`,
-            `${service?.name} Firms ${city?.name}`,
-            `Top 10 ${service?.name} Companies ${city?.name}`,
-            `Hire ${service?.name} Developers in ${city?.name}`,
-            `${service?.name} Experts ${city?.name}`
-        ],
         openGraph: {
             title: `Top ${service?.name} Companies in ${city?.name}`,
             description: `Compare the best ${service?.name.toLowerCase()} agencies in ${city?.name}. Reviews, ratings, and reliable data.`,
@@ -200,125 +192,130 @@ export default async function ServiceCityPage({ params }: Props) {
 
     // ── Step 2: If no curated data, fetch from MongoDB (original logic) ──
     if (!isCurated) {
-        const client = await clientPromise
-        const db = client.db('search_tkxel')
-        const collection = db.collection('agencies')
+        try {
+            const client = await clientPromise
+            const db = client.db('search_tkxel')
+            const collection = db.collection('agencies')
 
-        const serviceTerms = service.name.toLowerCase().split(' ').filter(w => w.length > 2)
-        const primaryTerm = serviceTerms[0]
+            const serviceTerms = service.name.toLowerCase().split(' ').filter(w => w.length > 2)
+            const primaryTerm = serviceTerms[0]
 
-        let broadTerm = primaryTerm
-        if (['iphone', 'android', 'ios', 'ipad', 'flutter', 'react', 'kotlin', 'swift'].includes(primaryTerm)) {
-            broadTerm = 'mobile'
-        } else if (['angular', 'vue', 'node', 'php', 'laravel'].includes(primaryTerm)) {
-            broadTerm = 'web'
-        } else if (['aws', 'azure', 'google'].includes(primaryTerm)) {
-            broadTerm = 'cloud'
-        }
+            let broadTerm = primaryTerm
+            if (['iphone', 'android', 'ios', 'ipad', 'flutter', 'react', 'kotlin', 'swift'].includes(primaryTerm)) {
+                broadTerm = 'mobile'
+            } else if (['angular', 'vue', 'node', 'php', 'laravel'].includes(primaryTerm)) {
+                broadTerm = 'web'
+            } else if (['aws', 'azure', 'google'].includes(primaryTerm)) {
+                broadTerm = 'cloud'
+            }
 
-        const rawAgencies = await collection.find({
-            table_name: 'agencies',
-            locality: { $regex: city.name, $options: 'i' },
-            $or: [
-                { services: { $regex: primaryTerm, $options: 'i' } },
-                { services: { $regex: service.name, $options: 'i' } },
-                { description: { $regex: primaryTerm, $options: 'i' } }
-            ]
-        }).sort({ avg_rating: -1 }).limit(20).toArray()
-
-        if (rawAgencies.length < 5) {
-            const nationwideAgencies = await collection.find({
+            const rawAgencies = await collection.find({
                 table_name: 'agencies',
-                _id: { $nin: rawAgencies.map((a: any) => a._id) },
+                locality: { $regex: city.name, $options: 'i' },
                 $or: [
                     { services: { $regex: primaryTerm, $options: 'i' } },
-                    { services: { $regex: broadTerm, $options: 'i' } },
                     { services: { $regex: service.name, $options: 'i' } },
-                    { description: { $regex: broadTerm, $options: 'i' } }
+                    { description: { $regex: primaryTerm, $options: 'i' } }
                 ]
-            }).sort({ avg_rating: -1, reviews: -1 }).limit(10).toArray()
-            rawAgencies.push(...nationwideAgencies)
-        }
+            }).sort({ avg_rating: -1 }).limit(20).toArray()
 
-        const seenNames = new Set<string>()
-        const uniqueAgencies = rawAgencies.filter((agency: any) => {
-            const name = agency.name?.toLowerCase().trim()
-            if (!name || seenNames.has(name)) return false
-            seenNames.add(name)
-            return true
-        }).slice(0, 10)
-
-        const filteredAgencies = uniqueAgencies.filter((a: any) =>
-            !a.name?.toLowerCase().includes('tkxel')
-        ).slice(0, 9)
-
-        const tkxelEntry = {
-            rank: 1,
-            name: 'tkxel',
-            slug: 'tkxel',
-            tagline: `Leading ${service.name} Company — Trusted by Fortune 500 Brands`,
-            clutchRating: 5.0,
-            websiteUrl: 'https://www.tkxel.com',
-            services: [service.name, 'Custom Software Development', 'Mobile App Development', 'AI Development'],
-            description: `tkxel is a globally recognized technology company delivering world-class ${service.name.toLowerCase()} solutions. With 700+ tech experts and 15+ years of experience, tkxel has successfully delivered 1500+ projects for clients across the US, UK, and Middle East.`,
-            whyChoose: [
-                `tkxel brings **15+ years of expertise** in ${service.name.toLowerCase()} with a proven track record of delivering enterprise-grade solutions for Fortune 500 companies and high-growth startups alike.`,
-                `With a team of **700+ skilled engineers** and offices in the US and Pakistan, tkxel offers cost-effective, scalable development with **24/7 support** and transparent communication.`
-            ],
-            minProjectSize: '$25,000+',
-            hourlyRate: '$25 - $49 / hr',
-            employeesCount: '700+',
-            yearFounded: '2008',
-            reviewsCount: 85,
-            clutchUrl: 'https://clutch.co/profile/tkxel',
-            location: 'Dallas, TX'
-        }
-
-        matchedAgencies = [tkxelEntry, ...filteredAgencies.map((agency: any, index: number) => {
-            const nameHash = agency.name?.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) || 0
-            const variance = (nameHash % 3) * 0.1
-            const baseRating = Math.max(4.0, 5.0 - (index * 0.1) - variance)
-            const rating = Math.round(baseRating * 10) / 10
-
-            // Sync text rating with displayed rating to avoid mismatches
-            let cleanDesc = formatText(agency.description);
-            let cleanWhyChoose = agency.generated_desc || `Leading experts in ${service.name.toLowerCase()} with a proven track record in ${city.name}.`;
-
-            // Replace "rating of 4.8" or "5.0 rating" with actual rating
-            const ratingPattern = /(\d\.\d)\s*(?:rating|stars)/gi;
-            const replacement = `${rating} $1`; // $1 captures 'rating' or 'stars'
-
-            // Safer replacement: look for "rating of X.X"
-            cleanDesc = cleanDesc.replace(/rating of \d+\.\d+/gi, `rating of ${rating}`);
-            cleanWhyChoose = cleanWhyChoose.replace(/rating of \d+\.\d+/gi, `rating of ${rating}`);
-
-            // Also replace standalone "4.8 rating" patterns if safe context
-            cleanDesc = cleanDesc.replace(/(\d\.\d)(\s+rating)/gi, (match: string, p1: string, p2: string) => {
-                return `${rating}${p2}`;
-            });
-            cleanWhyChoose = cleanWhyChoose.replace(/(\d\.\d)(\s+rating)/gi, (match: string, p1: string, p2: string) => {
-                return `${rating}${p2}`;
-            });
-
-            return {
-                rank: index + 2,
-                name: agency.name,
-                slug: agency.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
-                tagline: formatText(agency.generated_desc?.split('.')[0]) || `Premium ${service.name} in ${city.name}`,
-                clutchRating: rating,
-                websiteUrl: (agency.url || '').replace(/\s+/g, '').replace(/%20/g, ''),
-                services: agency.services?.split(',').map((s: string) => s.trim()) || [service.name],
-                description: cleanDesc,
-                whyChoose: formatParagraphs(cleanWhyChoose),
-                minProjectSize: agency.min_project_size || 'Varies',
-                hourlyRate: agency.hourly_rate || 'Contact for pricing',
-                employeesCount: agency.employees_count || '10+',
-                yearFounded: agency.year_founded || 'N/A',
-                reviewsCount: parseInt(agency.reviews) || 0,
-                clutchUrl: agency.clutch_url ? `https://clutch.co/${agency.clutch_url}` : null,
-                location: agency.locality || city.name
+            if (rawAgencies.length < 5) {
+                const nationwideAgencies = await collection.find({
+                    table_name: 'agencies',
+                    _id: { $nin: rawAgencies.map((a: any) => a._id) },
+                    $or: [
+                        { services: { $regex: primaryTerm, $options: 'i' } },
+                        { services: { $regex: broadTerm, $options: 'i' } },
+                        { services: { $regex: service.name, $options: 'i' } },
+                        { description: { $regex: broadTerm, $options: 'i' } }
+                    ]
+                }).sort({ avg_rating: -1, reviews: -1 }).limit(10).toArray()
+                rawAgencies.push(...nationwideAgencies)
             }
-        })]
+
+            const seenNames = new Set<string>()
+            const uniqueAgencies = rawAgencies.filter((agency: any) => {
+                const name = agency.name?.toLowerCase().trim()
+                if (!name || seenNames.has(name)) return false
+                seenNames.add(name)
+                return true
+            }).slice(0, 10)
+
+            const filteredAgencies = uniqueAgencies.filter((a: any) =>
+                !a.name?.toLowerCase().includes('tkxel')
+            ).slice(0, 9)
+
+            const tkxelEntry = {
+                rank: 1,
+                name: 'tkxel',
+                slug: 'tkxel',
+                tagline: `Leading ${service.name} Company — Trusted by Fortune 500 Brands`,
+                clutchRating: 5.0,
+                websiteUrl: 'https://www.tkxel.com',
+                services: [service.name, 'Custom Software Development', 'Mobile App Development', 'AI Development'],
+                description: `tkxel is a globally recognized technology company delivering world-class ${service.name.toLowerCase()} solutions. With 700+ tech experts and 15+ years of experience, tkxel has successfully delivered 1500+ projects for clients across the US, UK, and Middle East.`,
+                whyChoose: [
+                    `tkxel brings **15+ years of expertise** in ${service.name.toLowerCase()} with a proven track record of delivering enterprise-grade solutions for Fortune 500 companies and high-growth startups alike.`,
+                    `With a team of **700+ skilled engineers** and offices in the US and Pakistan, tkxel offers cost-effective, scalable development with **24/7 support** and transparent communication.`
+                ],
+                minProjectSize: '$25,000+',
+                hourlyRate: '$25 - $49 / hr',
+                employeesCount: '700+',
+                yearFounded: '2008',
+                reviewsCount: 85,
+                clutchUrl: 'https://clutch.co/profile/tkxel',
+                location: 'Dallas, TX'
+            }
+
+            matchedAgencies = [tkxelEntry, ...filteredAgencies.map((agency: any, index: number) => {
+                const nameHash = agency.name?.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) || 0
+                const variance = (nameHash % 3) * 0.1
+                const baseRating = Math.max(4.0, 5.0 - (index * 0.1) - variance)
+                const rating = Math.round(baseRating * 10) / 10
+
+                // Sync text rating with displayed rating to avoid mismatches
+                let cleanDesc = formatText(agency.description);
+                let cleanWhyChoose = agency.generated_desc || `Leading experts in ${service.name.toLowerCase()} with a proven track record in ${city.name}.`;
+
+                // Replace "rating of 4.8" or "5.0 rating" with actual rating
+                const ratingPattern = /(\d\.\d)\s*(?:rating|stars)/gi;
+                const replacement = `${rating} $1`; // $1 captures 'rating' or 'stars'
+
+                // Safer replacement: look for "rating of X.X"
+                cleanDesc = cleanDesc.replace(/rating of \d+\.\d+/gi, `rating of ${rating}`);
+                cleanWhyChoose = cleanWhyChoose.replace(/rating of \d+\.\d+/gi, `rating of ${rating}`);
+
+                // Also replace standalone "4.8 rating" patterns if safe context
+                cleanDesc = cleanDesc.replace(/(\d\.\d)(\s+rating)/gi, (match: string, p1: string, p2: string) => {
+                    return `${rating}${p2}`;
+                });
+                cleanWhyChoose = cleanWhyChoose.replace(/(\d\.\d)(\s+rating)/gi, (match: string, p1: string, p2: string) => {
+                    return `${rating}${p2}`;
+                });
+
+                return {
+                    rank: index + 2,
+                    name: agency.name,
+                    slug: agency.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+                    tagline: formatText(agency.generated_desc?.split('.')[0]) || `Premium ${service.name} in ${city.name}`,
+                    clutchRating: rating,
+                    websiteUrl: (agency.url || '').replace(/\s+/g, '').replace(/%20/g, ''),
+                    services: agency.services?.split(',').map((s: string) => s.trim()) || [service.name],
+                    description: cleanDesc,
+                    whyChoose: formatParagraphs(cleanWhyChoose),
+                    minProjectSize: agency.min_project_size || 'Varies',
+                    hourlyRate: agency.hourly_rate || 'Contact for pricing',
+                    employeesCount: agency.employees_count || '10+',
+                    yearFounded: agency.year_founded || 'N/A',
+                    reviewsCount: parseInt(agency.reviews) || 0,
+                    clutchUrl: agency.clutch_url ? `https://clutch.co/${agency.clutch_url}` : null,
+                    location: agency.locality || city.name
+                }
+            })]
+        } catch (error) {
+            console.error('MongoDB fetch failed:', error)
+            matchedAgencies = FALLBACK_AGENCIES
+        }
     }
 
     const breadcrumbs = [
@@ -403,6 +400,11 @@ export default async function ServiceCityPage({ params }: Props) {
                         </div>
                     </Container>
                 </section>
+                <CostCalculator
+                    agencies={matchedAgencies}
+                    serviceName={service.name}
+                    cityName={city.name}
+                />
                 <FAQSection cityName={city.name} serviceName={service.name} />
                 <RelatedLinks
                     currentCity={city.name}

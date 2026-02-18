@@ -2,17 +2,25 @@ import { Container } from '@/components/layout/Container'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { H1, H2, P } from '@/components/ui/Typography'
+import { SemanticSchema } from '@/components/seo/SemanticSchema'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Terms of Service | TopTechAgencies.com',
     description: 'Terms and conditions for using TopTechAgencies.com.',
+    alternates: {
+        canonical: 'https://toptechagencies.com/terms',
+    },
 }
 
 export default function TermsPage() {
     return (
         <div className="min-h-screen flex flex-col font-sans">
             <Navbar />
+            <SemanticSchema type="BreadcrumbList" data={[
+                { name: 'Home', url: '/' },
+                { name: 'Terms of Service', url: '/terms' }
+            ]} />
             <main className="flex-grow">
                 <section className="pt-32 pb-12 bg-bg-secondary border-b border-border-light">
                     <Container className="max-w-3xl">
