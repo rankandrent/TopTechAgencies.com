@@ -14,6 +14,7 @@ interface CostCalculatorProps {
     agencies: Agency[]
     serviceName: string
     cityName: string
+    id?: string
 }
 
 function parseHourlyRate(rate: string): { min: number; max: number } | null {
@@ -63,7 +64,7 @@ function formatCurrency(amount: number): string {
     }).format(amount)
 }
 
-export function CostCalculator({ agencies, serviceName, cityName }: CostCalculatorProps) {
+export function CostCalculator({ agencies, serviceName, cityName, id }: CostCalculatorProps) {
     const [selectedIdx, setSelectedIdx] = useState(0)
     const [hours, setHours] = useState(200)
     const [teamSize, setTeamSize] = useState(2)
@@ -90,7 +91,7 @@ export function CostCalculator({ agencies, serviceName, cityName }: CostCalculat
     const belowMinimum = minProject ? avgEstimate < minProject : false
 
     return (
-        <section className="py-20 bg-bg-secondary border-t border-b border-border-light">
+        <section id={id} className="py-20 bg-bg-secondary border-t border-b border-border-light">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12">

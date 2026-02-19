@@ -401,6 +401,7 @@ export default async function ServiceCityPage({ params }: Props) {
                     </Container>
                 </section>
                 <CostCalculator
+                    id="cost-calculator"
                     agencies={matchedAgencies}
                     serviceName={service.name}
                     cityName={city.name}
@@ -413,6 +414,15 @@ export default async function ServiceCityPage({ params }: Props) {
                     currentServiceSlug={serviceSlug}
                     currentCityState={city.state}
                 />
+
+                {/* Sticky Calculator Button */}
+                <Link
+                    href="#cost-calculator"
+                    className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-6 py-4 bg-text-primary text-white rounded-full shadow-2xl hover:bg-black/90 transition-all hover:-translate-y-1 group"
+                >
+                    <span className="text-xl">🧮</span>
+                    <span className="font-bold pr-1">Estimate Cost</span>
+                </Link>
             </main>
             <Footer />
         </div>
